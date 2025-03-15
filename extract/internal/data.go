@@ -57,11 +57,11 @@ type StreamingOption struct {
 }
 
 type Service struct {
-	ID              string     `json:"id"`
-	Name            string     `json:"name"`
-	HomePage        string     `json:"homePage"`
-	ThemeColorCode  string     `json:"themeColorCode"`
-	ImageSet        ServiceImageSet `json:"imageSet"`
+	ID             string          `json:"id"`
+	Name           string          `json:"name"`
+	HomePage       string          `json:"homePage"`
+	ThemeColorCode string          `json:"themeColorCode"`
+	ImageSet       ServiceImageSet `json:"imageSet"`
 }
 
 type ServiceImageSet struct {
@@ -80,20 +80,29 @@ type Locale struct {
 }
 
 type ShowDetailsParquet struct {
-	ItemType         string `parquet:"name=itemType, type=BYTE_ARRAY, convertedtype=UTF8"`
-	ShowType         string `parquet:"name=showType, type=BYTE_ARRAY, convertedtype=UTF8"`
-	ID               string `parquet:"name=id, type=BYTE_ARRAY, convertedtype=UTF8"`
-	ImdbID           string `parquet:"name=imdbId, type=BYTE_ARRAY, convertedtype=UTF8"`
-	TmdbID           string `parquet:"name=tmdbId, type=BYTE_ARRAY, convertedtype=UTF8"`
-	Title            string `parquet:"name=title, type=BYTE_ARRAY, convertedtype=UTF8"`
-	Overview         string `parquet:"name=overview, type=BYTE_ARRAY, convertedtype=UTF8"`
-	ReleaseYear      int    `parquet:"name=releaseYear, type=INT32"`
-	OriginalTitle    string `parquet:"name=originalTitle, type=BYTE_ARRAY, convertedtype=UTF8"`
-	Genres           string `parquet:"name=genres, type=BYTE_ARRAY, convertedtype=UTF8"`
-	Directors        string `parquet:"name=directors, type=BYTE_ARRAY, convertedtype=UTF8"`
-	Cast             string `parquet:"name=cast, type=BYTE_ARRAY, convertedtype=UTF8"`
-	Rating           int    `parquet:"name=rating, type=INT32"`
-	Runtime          int    `parquet:"name=runtime, type=INT32"`
-	ImageSet         string `parquet:"name=imageSet, type=BYTE_ARRAY, convertedtype=UTF8"`
-	StreamingOptions string `parquet:"name=streamingOptions, type=BYTE_ARRAY, convertedtype=UTF8"`
+	ItemType      string `parquet:"name=itemType, type=BYTE_ARRAY, convertedtype=UTF8"`
+	ShowType      string `parquet:"name=showType, type=BYTE_ARRAY, convertedtype=UTF8"`
+	ID            string `parquet:"name=id, type=BYTE_ARRAY, convertedtype=UTF8"`
+	ImdbID        string `parquet:"name=imdbId, type=BYTE_ARRAY, convertedtype=UTF8"`
+	TmdbID        string `parquet:"name=tmdbId, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Title         string `parquet:"name=title, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Overview      string `parquet:"name=overview, type=BYTE_ARRAY, convertedtype=UTF8"`
+	ReleaseYear   int    `parquet:"name=releaseYear, type=INT32"`
+	OriginalTitle string `parquet:"name=originalTitle, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Genres        string `parquet:"name=genres, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Directors     string `parquet:"name=directors, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Cast          string `parquet:"name=cast, type=BYTE_ARRAY, convertedtype=UTF8"`
+	Rating        int    `parquet:"name=rating, type=INT32"`
+	Runtime       int    `parquet:"name=runtime, type=INT32"`
+
+	PosterW240   string `parquet:"name=poster_w240, type=BYTE_ARRAY, convertedtype=UTF8"`
+	PosterW480   string `parquet:"name=poster_w480, type=BYTE_ARRAY, convertedtype=UTF8"`
+	BackdropW720 string `parquet:"name=backdrop_w720, type=BYTE_ARRAY, convertedtype=UTF8"`
+
+	StreamingServiceName string `parquet:"name=streaming_service_name, type=BYTE_ARRAY, convertedtype=UTF8"`
+	StreamingType        string `parquet:"name=streaming_type, type=BYTE_ARRAY, convertedtype=UTF8"`
+	StreamingQuality     string `parquet:"name=streaming_quality, type=BYTE_ARRAY, convertedtype=UTF8"`
+	StreamingLink        string `parquet:"name=streaming_link, type=BYTE_ARRAY, convertedtype=UTF8"`
+	AvailableSince       int64  `parquet:"name=available_since, type=INT64"`
+	Subtitles            string `parquet:"name=subtitles, type=BYTE_ARRAY, convertedtype=UTF8"`
 }
