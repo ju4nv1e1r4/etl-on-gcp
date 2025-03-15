@@ -17,6 +17,7 @@ func UploadParquetOnGCS(parquetData[]byte, bucketName string, objectName string)
 	}
 
 	defer client.Close()
+	log.Printf("Tamanho dos dados para upload: %d bytes", len(parquetData))
 
 	bucket := client.Bucket(bucketName)
 	object := bucket.Object(objectName)
