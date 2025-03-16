@@ -9,20 +9,22 @@ import warnings
 warnings.filterwarnings("ignore")
 reload(gcs)
 
-print("|||| Pipeline iniciado ||||")
+print("⚙️ Pipeline iniciado ⚙️")
 ops = CloudStorageOps("streaming-data-for-ml")
 
+# loading files...
 parquet_data = [blob.name for blob in ops.storage_client.list_blobs(ops.bucket_name) if blob.name.endswith(".parquet")]
 
 dfs = []
 for f in parquet_data:
-    print(f"Downloading: {f}")
+    print(f"⬇️ Downloading: {f}")
     parquet_bytes = ops.load_parquet_from_bucket(f)
     df = pd.read_parquet(io.BytesIO(parquet_bytes))
     dfs.append(df)
 
+# concatenating files...
 data = pd.concat(dfs, ignore_index=True)
-print("Dados concatenados")
+print(" Concatenated data ✅")
 
 for_ml = [
     "id",
@@ -43,6 +45,7 @@ for_ml = [
 
 data_for_ml = data[for_ml]
 
+# now it creates mutiple new features
 decade_interval_bins = [1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020, 2030]
 decade_labels = ["1910s", "1920s", "1930s", "1940s", "1950s", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s", "2020s"]
 
@@ -80,7 +83,7 @@ data_for_ml["runtimeCategories"] = data_for_ml["runtimeCategories"].astype("obje
 
 def clean_list_string(list_string):
     """
-    Converte uma string que representa uma lista em uma lista Python e remove aspas.
+    Converts a string representing a list to a Python list and removes quotes.
     """
     try:
         list_obj = ast.literal_eval(list_string)
@@ -121,9 +124,11 @@ data_for_ml["is_popular_service"] = data_for_ml["streaming_service_name"].isin([
 data_for_ml["streaming_platform_type"] = data_for_ml["streaming_service_name"].apply(lambda x: "Premium" if x in ["Netflix", "Apple TV", "Disney+", "Prime Video"] else "Free" if x == "Pluto TV" else "Others")
 
 data_for_ml.to_parquet("transform/data/movies.parquet")
-print("\nDados salvos no repositório local.")
+print("\nData saved in local repository. ✅")
 
 ops.upload_file_to_bucket(
     "transform/data/movies.parquet",
     "data/main_data.parquet"
 )
+
+# the end

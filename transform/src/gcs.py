@@ -7,24 +7,30 @@ class CloudStorageOps:
         self.bucket = self.storage_client.bucket(bucket_name)
 
     def load_parquet_from_bucket(self, file_path: str):
-        """Baixa um arquivo Parquet do bucket e retorna os bytes"""
+        """
+        Downloads a Parquet file from the bucket and returns the bytes
+        Gets the name of the file to be downloaded from the bucket in Google Cloud Storage.
+        """
         blob = self.bucket.blob(file_path)
         
         try:
             parquet_data = blob.download_as_bytes()
             return parquet_data
         except Exception as e:
-            print(f"Erro ao baixar parquet: {e}")
+            print(f"Error downloading parquet: {e}")
             return None
 
     def list_from_bucket(self):
-        """Lista todos os arquivos no bucket"""
+        """List all files in the bucket"""
         blobs = self.storage_client.list_blobs(self.bucket_name)
         for blob in blobs:
             print(blob.name)
 
     def delete_from_bucket(self, file_path):
-        """Deleta um arquivo específico do bucket"""
+        """
+        Delete a specific file from the bucket
+        Gets the name of the file to be deleted from the bucket in Google Cloud Storage.
+        """
         my_bucket = self.storage_client.bucket(self.bucket_name)
         blob = my_bucket.blob(file_path)
         generation_match_precondition = None
@@ -36,6 +42,12 @@ class CloudStorageOps:
         return print(f"File deleted: '{file_path}'.")
     
     def upload_file_to_bucket(self, source_file_name, destination_file_name):
+        """
+        Upload a file to a Google Cloud Storage bucket
+        This function must have:
+        - Name of the source file (local)
+        - Name of the file in the destination (GCS Bucket)
+        """
         my_bucket = self.storage_client.bucket(self.bucket_name)
         blob = my_bucket.blob(destination_file_name)
 
