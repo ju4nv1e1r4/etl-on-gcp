@@ -122,3 +122,8 @@ data_for_ml["streaming_platform_type"] = data_for_ml["streaming_service_name"].a
 
 data_for_ml.to_parquet("transform/data/movies.parquet")
 print("\nDados salvos no repositório local.")
+
+ops.upload_file_to_bucket(
+    "transform/data/movies.parquet",
+    "data/main_data.parquet"
+)
