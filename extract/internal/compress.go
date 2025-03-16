@@ -10,6 +10,9 @@ import (
 	"github.com/xitongsys/parquet-go/writer"
 )
 
+// JSONtoParquet converts JSON to parquet. The entire operation works from []byte to []byte. 
+// Therefore, this function receives a JSON in []byte and returns parquet in byte.
+// Note: the function depends directly on structs in 'internal/data.go'.
 func JSONtoParquet(jsonData []byte) ([]byte, error) {
     var showDetails []ShowDetails
     err := json.Unmarshal(jsonData, &showDetails)
@@ -17,14 +20,13 @@ func JSONtoParquet(jsonData []byte) ([]byte, error) {
         var singleShow ShowDetails
         err = json.Unmarshal(jsonData, &singleShow)
         if err != nil {
-            return nil, fmt.Errorf("erro decode json: %w", err)
+            return nil, fmt.Errorf("error decoding JSON: %w", err)
         }
         showDetails = []ShowDetails{singleShow}
     }
 
     var parquetData []ShowDetailsParquet
     for _, show := range showDetails {
-        // Processa os gêneros para formato string separado por vírgulas
         var genreNames []string
         for _, genre := range show.Genres {
             genreNames = append(genreNames, genre.Name)
@@ -34,7 +36,6 @@ func JSONtoParquet(jsonData []byte) ([]byte, error) {
         directorsJSON, _ := json.Marshal(show.Directors)
         castJSON, _ := json.Marshal(show.Cast)
 
-        // Extrai informações de streaming se disponíveis
         streamingServiceName := ""
         streamingType := ""
         streamingQuality := ""
@@ -43,7 +44,6 @@ func JSONtoParquet(jsonData []byte) ([]byte, error) {
         var subtitlesStr string = ""
 
         if len(show.StreamingOptions.US) > 0 {
-            // Pega o primeiro serviço de streaming disponível nos EUA
             streamOption := show.StreamingOptions.US[0]
             streamingServiceName = streamOption.Service.Name
             streamingType = streamOption.Type
@@ -51,7 +51,6 @@ func JSONtoParquet(jsonData []byte) ([]byte, error) {
             streamingLink = streamOption.Link
             availableSince = streamOption.AvailableSince
             
-            // Processa legendas para formato mais amigável para coluna
             var subtitleLanguages []string
             for _, subtitle := range streamOption.Subtitles {
                 subtitleLanguages = append(subtitleLanguages, subtitle.Locale.Language)
@@ -75,12 +74,10 @@ func JSONtoParquet(jsonData []byte) ([]byte, error) {
             Rating:        show.Rating,
             Runtime:       show.Runtime,
 
-            // Extrai URLs específicas de imagens
             PosterW240:   show.ImageSet.VerticalPoster.W240,
             PosterW480:   show.ImageSet.VerticalPoster.W480,
             BackdropW720: show.ImageSet.HorizontalBackdrop.W720,
 
-            // Informações do serviço de streaming
             StreamingServiceName: streamingServiceName,
             StreamingType:        streamingType,
             StreamingQuality:     streamingQuality,
@@ -98,7 +95,7 @@ func JSONtoParquet(jsonData []byte) ([]byte, error) {
         4,
     )
     if err != nil {
-        return nil, fmt.Errorf("erro ao criar Parquet Writer: %w", err)
+        return nil, fmt.Errorf("error creating Parquet Writer: %w", err)
     }
 
     pw.RowGroupSize = 128 * 1024 * 1024 // 128M
@@ -106,12 +103,12 @@ func JSONtoParquet(jsonData []byte) ([]byte, error) {
 
     for _, rec := range parquetData {
         if err := pw.Write(rec); err != nil {
-            return nil, fmt.Errorf("erro ao escrever Parquet: %w", err)
+            return nil, fmt.Errorf("error writing Parquet: %w", err)
         }
     }
 
     if err := pw.WriteStop(); err != nil {
-        return nil, fmt.Errorf("erro ao finalizar a escrita do Parquet: %w", err)
+        return nil, fmt.Errorf("error finishing Parquet writing: %w", err)
     }
 
     return buf.Bytes(), nil
