@@ -17,6 +17,19 @@ class FeatureStore:
         self.features_metadata = {}
 
     def metadata(self, feature_group_id, feature_group_name, feature_group_description, source, usage):
+        """
+        Generates metadata for a feature group
+
+        Args:
+        feature_group_id (str): Unique identifier for the feature group
+        feature_group_name (str): Name of the feature group
+        feature_group_description (str): Description of the feature group
+        source (str): Data source
+        usage (str): Description of the intended use for ML
+
+        Returns:
+        dict: Dictionary with the metadata
+        """
         created_at = datetime.datetime.now().isoformat()
     
         metadata = {
@@ -35,6 +48,16 @@ class FeatureStore:
         return metadata
 
     def add_feature_metadata(self, feature_group_id, feature_name, feature_type, description=None, stats=None):
+        """
+        Adds metadata for a specific feature
+
+        Args:
+        feature_group_id (str): ID of the feature group this feature belongs to
+        feature_name (str): Name of the feature
+        feature_type (str): Data type of the feature (int, float, string, etc.)
+        description (str, optional): Description of the feature
+        stats (dict, optional): Statistics about the feature (avg, min, max, etc.)
+        """
         if feature_group_id not in self.features_metadata:
             raise ValueError(f"Feature groups {feature_group_id} not found.")
             
@@ -48,6 +71,15 @@ class FeatureStore:
         self.features_metadata[feature_group_id]["features"].append(feature_info)
 
     def calculate_dataframe_stats(self, df):
+        """
+        Calculates basic statistics for each column of the DataFrame
+
+        Args:
+        df (pandas.DataFrame): DataFrame to calculate statistics on
+
+        Returns:
+        dict: Dictionary with statistics for each column
+        """
         stats = {}
         
         for column in df.columns:
@@ -75,6 +107,17 @@ class FeatureStore:
         return stats
     
     def version_control(self, feature_group_id, df, version=None):
+        """
+        Implements simple versioning for data
+
+        Args:
+        feature_group_id (str): ID of the feature group
+        df (pandas.DataFrame): DataFrame to be versioned
+        version (str, optional): Version to assign. If None, will be incremented.
+
+        Returns:
+        str: Current version of the data
+        """
         df_hash = hashlib.md5(pd.util.hash_pandas_object(df).values).hexdigest()
         
         if feature_group_id not in self.version_history:
@@ -110,6 +153,16 @@ class FeatureStore:
         return new_version
     
     def save_metadata(self, feature_group_id, local_path=None):
+        """
+        Saves the metadata to a JSON file
+
+        Args:
+        feature_group_id (str): Feature group ID
+        local_path (str, optional): Local path to save the file
+
+        Returns:
+        str: Path to the saved file
+        """
         if feature_group_id not in self.features_metadata:
             raise ValueError(f"Grupo de features {feature_group_id} não encontrado")
             
@@ -132,6 +185,20 @@ class FeatureStore:
         return local_path
 
     def grouping_features(self, blob, feature_group_id, name, description, source, usage):
+        """
+        Groups features and saves them into separate parquet files with metadata
+
+        Args:
+        blob (str): Path to parquet file in bucket
+        feature_group_id (str): Feature group ID
+        name (str): Feature group name
+        description (str): Feature group description
+        source (str): Data source
+        usage (str): Intended use for ML
+
+        Returns:
+        dict: Feature group metadata
+        """
         print(f"Processing feature group: {name}")
         
         parquet_bytes = self.ops.load_parquet_from_bucket(blob)
