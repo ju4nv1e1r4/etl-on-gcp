@@ -12,7 +12,7 @@ import (
 func Run()  {
 	constants.InitLogger()
 	
-	showTitle := "w"
+	showTitle := "Indiana Jones"
 	jsonData := requests.ExtractMoviesByTitle(showTitle)
 
 	parquetData, err := internal.JSONtoParquet(jsonData)
