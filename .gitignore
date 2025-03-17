@@ -379,3 +379,4 @@ cython_debug/
 
 # others
 *.json
+*.ipynb
