@@ -51,9 +51,9 @@ class CloudStorageOps:
         my_bucket = self.storage_client.bucket(self.bucket_name)
         blob = my_bucket.blob(destination_file_name)
 
-        generation_match_precondition = 0
+        # generation_match_precondition = 0
 
-        blob.upload_from_filename(source_file_name, if_generation_match=generation_match_precondition)
+        blob.upload_from_filename(source_file_name)#, if_generation_match=generation_match_precondition)
 
         return print(
             f"File {source_file_name} uploaded to {destination_file_name}."

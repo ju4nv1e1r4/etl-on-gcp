@@ -9,11 +9,11 @@ import warnings
 warnings.filterwarnings("ignore")
 reload(gcs)
 
-print("⚙️ Pipeline iniciado ⚙️")
+print("⚙️ Transform started ⚙️")
 ops = CloudStorageOps("streaming-data-for-ml")
 
 # loading files...
-parquet_data = [blob.name for blob in ops.storage_client.list_blobs(ops.bucket_name) if blob.name.endswith(".parquet")]
+parquet_data = [blob.name for blob in ops.storage_client.list_blobs(ops.bucket_name) if blob.name.startswith("data/")]
 
 dfs = []
 for f in parquet_data:
